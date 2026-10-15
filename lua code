@@ -128,7 +128,7 @@ local HeadsitBtn = Instance.new("TextButton")
 HeadsitBtn.Size = UDim2.new(1,0,0,30)
 HeadsitBtn.Position = UDim2.new(0,0,0,0)
 HeadsitBtn.BackgroundColor3 = Color3.fromRGB(0,200,100)
-HeadsitBtn.Text = "▶ فوق الرأس"
+HeadsitBtn.Text = "Headsit"
 HeadsitBtn.TextColor3 = Color3.new(1,1,1)
 HeadsitBtn.TextSize = 13
 HeadsitBtn.Font = Enum.Font.GothamBold
@@ -139,23 +139,12 @@ local InsideBtn = Instance.new("TextButton")
 InsideBtn.Size = UDim2.new(1,0,0,30)
 InsideBtn.Position = UDim2.new(0,0,0,35)
 InsideBtn.BackgroundColor3 = Color3.fromRGB(100,100,255)
-InsideBtn.Text = "👤 View"
+InsideBtn.Text = "👤 keep teleporting"
 InsideBtn.TextColor3 = Color3.new(1,1,1)
 InsideBtn.TextSize = 13
 InsideBtn.Font = Enum.Font.GothamBold
 InsideBtn.Parent = BtnContainer
 Instance.new("UICorner",InsideBtn).CornerRadius = UDim.new(0,8)
-
-local InvisBtn = Instance.new("TextButton")
-InvisBtn.Size = UDim2.new(1,0,0,30)
-InvisBtn.Position = UDim2.new(0,0,0,70)
-InvisBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-InvisBtn.Text = "👁 إخفاء الجسم: OFF"
-InvisBtn.TextColor3 = Color3.new(1,1,1)
-InvisBtn.TextSize = 12
-InvisBtn.Font = Enum.Font.GothamBold
-InvisBtn.Parent = BtnContainer
-Instance.new("UICorner",InvisBtn).CornerRadius = UDim.new(0,8)
 
 local StopBtn = Instance.new("TextButton")
 StopBtn.Size = UDim2.new(1,0,0,25)
@@ -299,14 +288,14 @@ function stopGhost()
             if p:IsA("BasePart") then p.CanCollide = true; p.Massless = false; p.Anchored = false end
         end
     end
-    StatusLabel.Text = "🔴 غير متصل"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80)
+    StatusLabel.Text = "🔴 Stopped"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80)
     HeadsitBtn.BackgroundColor3 = Color3.fromRGB(0,200,100)
 end
 
 local function startGhost(insideMode)
     if State.Running then stopGhost(); task.wait(0.1) end
     local target = getPlayer(SearchBox.Text)
-    if not target then StatusLabel.Text = "❌ لم يتم العثور على اللاعب"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80); return end
+    if not target then StatusLabel.Text = "❌ doesnt work"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80); return end
     local myChar = plr.Character
     if not myChar then return end
     local myHrp = myChar:FindFirstChild("HumanoidRootPart")
@@ -321,7 +310,7 @@ local function startGhost(insideMode)
     myHrp.AssemblyLinearVelocity = Vector3.zero; myHrp.AssemblyAngularVelocity = Vector3.zero
     local offset = insideMode and CONFIG.InsideOffset or CONFIG.HeadOffset
     local modeText = insideMode and "داخل الجسم" or "فوق الرأس"
-    StatusLabel.Text = "🟢 ملصوق: "..target.DisplayName.." ("..modeText..")"
+    StatusLabel.Text = "🟢 works "..target.DisplayName.." ("..modeText..")"
     StatusLabel.TextColor3 = Color3.fromRGB(0,255,136)
     HeadsitBtn.BackgroundColor3 = Color3.fromRGB(255,160,0)
     State.Connection = RunService.PreSimulation:Connect(function(dt)
