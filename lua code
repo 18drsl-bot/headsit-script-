@@ -1,5 +1,5 @@
 --------------------------------------------------------------------
--- Ultimate Ghost v15.0 - Velocity Prediction (Jump to Stop)
+-- Quans awesomesauce headsit v15.0 - Velocity Prediction
 --------------------------------------------------------------------
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -7,6 +7,16 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 
 local plr = Players.LocalPlayer
+
+-- Clean up any existing GUI if re-executing
+pcall(function()
+    if CoreGui:FindFirstChild("QuansAwesomesauceHeadsit") then
+        CoreGui.QuansAwesomesauceHeadsit:Destroy()
+    end
+    if plr.PlayerGui:FindFirstChild("QuansAwesomesauceHeadsit") then
+        plr.PlayerGui.QuansAwesomesauceHeadsit:Destroy()
+    end
+end)
 
 local CONFIG = {
     HeadOffset    = CFrame.new(0, 3.5, 0),
@@ -25,7 +35,7 @@ local State = {
 }
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "UltimateGhostV15"
+ScreenGui.Name = "QuansAwesomesauceHeadsit"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.DisplayOrder = 999999
@@ -36,7 +46,7 @@ local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Size = UDim2.new(0,55,0,55)
 ToggleBtn.Position = UDim2.new(0,15,0.5,-27)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(15,15,15)
-ToggleBtn.Text = "👻"
+ToggleBtn.Text = "🧢"
 ToggleBtn.TextSize = 26
 ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.TextColor3 = Color3.fromRGB(0,255,136)
@@ -68,7 +78,7 @@ local TitleText = Instance.new("TextLabel")
 TitleText.Size = UDim2.new(1,-70,1,0)
 TitleText.Position = UDim2.new(0,12,0,0)
 TitleText.BackgroundTransparency = 1
-TitleText.Text = "ULTIMATE GHOST v15.0"
+TitleText.Text = "QUANS AWESOMESAUCE"
 TitleText.TextColor3 = Color3.fromRGB(0,255,136)
 TitleText.TextSize = 15
 TitleText.Font = Enum.Font.GothamBold
@@ -294,14 +304,14 @@ end
 
 ToggleBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
-    ToggleBtn.Text = MainFrame.Visible and "✕" or "👻"
+    ToggleBtn.Text = MainFrame.Visible and "✕" or "🧢"
     if MainFrame.Visible then updatePlayerList() end
 end)
 
 HeadsitBtn.MouseButton1Click:Connect(function() startGhost(false) end)
 InsideBtn.MouseButton1Click:Connect(function() startGhost(true) end)
 StopBtn.MouseButton1Click:Connect(stopGhost)
-CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; ToggleBtn.Text = "👻" end)
+CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; ToggleBtn.Text = "🧢" end)
 Players.PlayerAdded:Connect(updatePlayerList)
 Players.PlayerRemoving:Connect(function(p) updatePlayerList(); if State.Target == p then stopGhost() end end)
 
@@ -317,4 +327,4 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 updatePlayerList()
-print("✅ Ultimate Ghost v15.0 - Jump to Stop Enabled")
+print("✅ Quans awesomesauce headsit v15.0 - Ready")
