@@ -1,5 +1,5 @@
 --------------------------------------------------------------------
--- Ultimate Ghost v15.0 - Velocity Prediction + Invisible Body
+-- Ultimate Ghost v15.0 - Quans headsit nigger
 --------------------------------------------------------------------
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -22,8 +22,6 @@ local State = {
     LastPos     = nil,
     LastTime    = nil,
     Velocity    = Vector3.zero,
-    Invisible   = false,
-    OriginalProps = {},
 }
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -49,8 +47,8 @@ local ts = Instance.new("UIStroke",ToggleBtn)
 ts.Color = Color3.fromRGB(0,255,136); ts.Thickness = 2.5
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0,260,0,340)
-MainFrame.Position = UDim2.new(0,80,0.5,-170)
+MainFrame.Size = UDim2.new(0,260,0,300)
+MainFrame.Position = UDim2.new(0,80,0.5,-150)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
 MainFrame.BorderSizePixel = 0
 MainFrame.Visible = false
@@ -119,7 +117,7 @@ PlayerList.Parent = Content
 Instance.new("UIListLayout",PlayerList).Padding = UDim.new(0,3)
 
 local BtnContainer = Instance.new("Frame")
-BtnContainer.Size = UDim2.new(1,0,0,130)
+BtnContainer.Size = UDim2.new(1,0,0,95)
 BtnContainer.Position = UDim2.new(0,0,0,148)
 BtnContainer.BackgroundTransparency = 1
 BtnContainer.Parent = Content
@@ -139,7 +137,7 @@ local InsideBtn = Instance.new("TextButton")
 InsideBtn.Size = UDim2.new(1,0,0,30)
 InsideBtn.Position = UDim2.new(0,0,0,35)
 InsideBtn.BackgroundColor3 = Color3.fromRGB(100,100,255)
-InsideBtn.Text = "👤 keep teleporting"
+InsideBtn.Text = "👤 Keep Teleporting"
 InsideBtn.TextColor3 = Color3.new(1,1,1)
 InsideBtn.TextSize = 13
 InsideBtn.Font = Enum.Font.GothamBold
@@ -148,9 +146,9 @@ Instance.new("UICorner",InsideBtn).CornerRadius = UDim.new(0,8)
 
 local StopBtn = Instance.new("TextButton")
 StopBtn.Size = UDim2.new(1,0,0,25)
-StopBtn.Position = UDim2.new(0,0,0,105)
+StopBtn.Position = UDim2.new(0,0,0,70)
 StopBtn.BackgroundColor3 = Color3.fromRGB(200,60,60)
-StopBtn.Text = "⏹ إيقاف"
+StopBtn.Text = "⏹ Stop"
 StopBtn.TextColor3 = Color3.new(1,1,1)
 StopBtn.TextSize = 12
 StopBtn.Font = Enum.Font.GothamBold
@@ -161,7 +159,7 @@ local StatusLabel = Instance.new("TextLabel")
 StatusLabel.Size = UDim2.new(1,0,0,20)
 StatusLabel.Position = UDim2.new(0,0,1,-20)
 StatusLabel.BackgroundTransparency = 1
-StatusLabel.Text = "⚪ جاهز"
+StatusLabel.Text = "⚪ Ready"
 StatusLabel.TextColor3 = Color3.fromRGB(120,120,120)
 StatusLabel.TextSize = 11
 StatusLabel.Font = Enum.Font.Gotham
@@ -226,58 +224,10 @@ local function updatePlayerList()
     PlayerList.CanvasSize = UDim2.new(0,0,0,count*33)
 end
 
-local function makeInvisible()
-    local char = plr.Character
-    if not char then return end
-    State.OriginalProps = {}
-    for _, p in pairs(char:GetDescendants()) do
-        if p:IsA("BasePart") and p.Name ~= "HumanoidRootPart" then
-            State.OriginalProps[p] = {Transparency = p.Transparency, LocalTransparencyModifier = p.LocalTransparencyModifier}
-            p.Transparency = 1
-            p.LocalTransparencyModifier = 1
-        elseif p:IsA("Decal") or p:IsA("SpecialMesh") or p:IsA("SurfaceAppearance") then
-            State.OriginalProps[p] = {Transparency = p.Transparency}
-            p.Transparency = 1
-        end
-    end
-    for _, acc in pairs(char:GetChildren()) do
-        if acc:IsA("Accessory") then
-            local handle = acc:FindFirstChild("Handle")
-            if handle then
-                State.OriginalProps[handle] = {Transparency = handle.Transparency}
-                handle.Transparency = 1
-            end
-        end
-    end
-    State.Invisible = true
-    InvisBtn.Text = "👁 Headless (client): ON"
-    InvisBtn.BackgroundColor3 = Color3.fromRGB(255,140,0)
-end
-
-local function makeVisible()
-    local char = plr.Character
-    if not char then return end
-    for p, props in pairs(State.OriginalProps) do
-        if p and p.Parent then
-            if props.Transparency ~= nil then p.Transparency = props.Transparency end
-            if props.LocalTransparencyModifier ~= nil then p.LocalTransparencyModifier = props.LocalTransparencyModifier end
-        end
-    end
-    State.OriginalProps = {}
-    State.Invisible = false
-    InvisBtn.Text = "👁 إخفاء الجسم: OFF"
-    InvisBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-end
-
-InvisBtn.MouseButton1Click:Connect(function()
-    if State.Invisible then makeVisible() else makeInvisible() end
-end)
-
 function stopGhost()
     State.Running = false; State.Target = nil
     State.LastPos = nil; State.LastTime = nil; State.Velocity = Vector3.zero
     if State.Connection then State.Connection:Disconnect(); State.Connection = nil end
-    if State.Invisible then makeVisible() end
     local char = plr.Character
     if char then
         local hum = char:FindFirstChildOfClass("Humanoid")
@@ -295,7 +245,7 @@ end
 local function startGhost(insideMode)
     if State.Running then stopGhost(); task.wait(0.1) end
     local target = getPlayer(SearchBox.Text)
-    if not target then StatusLabel.Text = "❌ doesnt work"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80); return end
+    if not target then StatusLabel.Text = "❌ Player not found"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80); return end
     local myChar = plr.Character
     if not myChar then return end
     local myHrp = myChar:FindFirstChild("HumanoidRootPart")
@@ -309,14 +259,14 @@ local function startGhost(insideMode)
     end
     myHrp.AssemblyLinearVelocity = Vector3.zero; myHrp.AssemblyAngularVelocity = Vector3.zero
     local offset = insideMode and CONFIG.InsideOffset or CONFIG.HeadOffset
-    local modeText = insideMode and "داخل الجسم" or "فوق الرأس"
-    StatusLabel.Text = "🟢 works "..target.DisplayName.." ("..modeText..")"
+    local modeText = insideMode and "Inside Body" or "Above Head"
+    StatusLabel.Text = "🟢 Active: "..target.DisplayName.." ("..modeText..")"
     StatusLabel.TextColor3 = Color3.fromRGB(0,255,136)
     HeadsitBtn.BackgroundColor3 = Color3.fromRGB(255,160,0)
     State.Connection = RunService.PreSimulation:Connect(function(dt)
         if not State.Running then return end
         local tc = State.Target and State.Target.Character
-        if not tc then StatusLabel.Text = "🟡 انتظر respawn..."; return end
+        if not tc then StatusLabel.Text = "🟡 Waiting for respawn..."; return end
         local tHrp = tc:FindFirstChild("HumanoidRootPart")
         local mChar = plr.Character
         local mHrp = mChar and mChar:FindFirstChild("HumanoidRootPart")
@@ -337,7 +287,7 @@ local function startGhost(insideMode)
         mHrp.CFrame = predictedCFrame * offset
         local mHum = mChar:FindFirstChildOfClass("Humanoid")
         if mHum then mHum.PlatformStand = true; mHum.WalkSpeed = 0; mHum.JumpPower = 0 end
-        StatusLabel.Text = "🟢 ملصوق: "..State.Target.DisplayName
+        StatusLabel.Text = "🟢 Attached: "..State.Target.DisplayName
         StatusLabel.TextColor3 = Color3.fromRGB(0,255,136)
     end)
 end
@@ -354,19 +304,13 @@ StopBtn.MouseButton1Click:Connect(stopGhost)
 CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; ToggleBtn.Text = "👻" end)
 Players.PlayerAdded:Connect(updatePlayerList)
 Players.PlayerRemoving:Connect(function(p) updatePlayerList(); if State.Target == p then stopGhost() end end)
-plr.CharacterAdded:Connect(function()
-    State.Invisible = false; State.OriginalProps = {}
-    InvisBtn.Text = "👁 إخفاء الجسم: OFF"
-    InvisBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-end)
+
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.RightShift then ToggleBtn.MouseButton1Click:Fire()
     elseif input.KeyCode == Enum.KeyCode.End then stopGhost()
-    elseif input.KeyCode == Enum.KeyCode.F then
-        if State.Invisible then makeVisible() else makeInvisible() end
     end
 end)
 
 updatePlayerList()
-print("✅ Ultimate Ghost v15.0 - Prediction + Invisible Body")
+print("✅ Ultimate Ghost v15.0 - Prediction (English Translation)")
