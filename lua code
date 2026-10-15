@@ -1,5 +1,5 @@
 --------------------------------------------------------------------
--- Ultimate Ghost v15.0 - Quans headsit nigger
+-- Ultimate Ghost v15.0 - Velocity Prediction (Jump to Stop)
 --------------------------------------------------------------------
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -307,10 +307,14 @@ Players.PlayerRemoving:Connect(function(p) updatePlayerList(); if State.Target =
 
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
-    if input.KeyCode == Enum.KeyCode.RightShift then ToggleBtn.MouseButton1Click:Fire()
-    elseif input.KeyCode == Enum.KeyCode.End then stopGhost()
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        ToggleBtn.MouseButton1Click:Fire()
+    elseif input.KeyCode == Enum.KeyCode.End then
+        stopGhost()
+    elseif input.KeyCode == Enum.KeyCode.Space and State.Running then
+        stopGhost()
     end
 end)
 
 updatePlayerList()
-print("✅ Ultimate Ghost v15.0 - Prediction (English Translation)")
+print("✅ Ultimate Ghost v15.0 - Jump to Stop Enabled")
