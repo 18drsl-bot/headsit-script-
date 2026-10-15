@@ -97,7 +97,7 @@ local SearchBox = Instance.new("TextBox")
 SearchBox.Size = UDim2.new(1,0,0,34)
 SearchBox.BackgroundColor3 = Color3.fromRGB(25,25,25)
 SearchBox.BorderSizePixel = 0
-SearchBox.PlaceholderText = "🔍 ابحث عن لاعب..."
+SearchBox.PlaceholderText = "🔍 Spectate"
 SearchBox.Text = ""
 SearchBox.TextColor3 = Color3.new(1,1,1)
 SearchBox.PlaceholderColor3 = Color3.fromRGB(100,100,100)
@@ -139,7 +139,7 @@ local InsideBtn = Instance.new("TextButton")
 InsideBtn.Size = UDim2.new(1,0,0,30)
 InsideBtn.Position = UDim2.new(0,0,0,35)
 InsideBtn.BackgroundColor3 = Color3.fromRGB(100,100,255)
-InsideBtn.Text = "👤 داخل الجسم"
+InsideBtn.Text = "👤 View"
 InsideBtn.TextColor3 = Color3.new(1,1,1)
 InsideBtn.TextSize = 13
 InsideBtn.Font = Enum.Font.GothamBold
@@ -261,7 +261,7 @@ local function makeInvisible()
         end
     end
     State.Invisible = true
-    InvisBtn.Text = "👁 إخفاء الجسم: ON"
+    InvisBtn.Text = "👁 Headless (client): ON"
     InvisBtn.BackgroundColor3 = Color3.fromRGB(255,140,0)
 end
 
