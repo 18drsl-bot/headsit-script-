@@ -1,3 +1,4 @@
+```
 --------------------------------------------------------------------
 -- Quans awesomesauce headsit v15.0 - Velocity Prediction
 --------------------------------------------------------------------
@@ -208,31 +209,66 @@ local function getPlayer(name)
     end
 end
 
+local selectedPlayer = nil
 local function updatePlayerList()
-    for _, c in pairs(PlayerList:GetChildren()) do
-        if c:IsA("TextButton") then c:Destroy() end
-    end
-    local count = 0
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= plr then
-            count += 1
-            local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(1,-6,0,30)
-            btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-            btn.Text = p.DisplayName.." (@"..p.Name..")"
-            btn.TextColor3 = Color3.fromRGB(200,200,200)
-            btn.TextSize = 12
-            btn.Font = Enum.Font.Gotham
-            btn.Parent = PlayerList
-            Instance.new("UICorner",btn).CornerRadius = UDim.new(0,6)
-            btn.MouseButton1Click:Connect(function()
-                SearchBox.Text = p.Name
-                SearchBox:ReleaseFocus()
-            end)
+    for _, child in ipairs(PlayerList:GetChildren()) do
+        if child:IsA("TextButton") or child.Name == "NoMatches" then
+            child:Destroy()
         end
     end
-    PlayerList.CanvasSize = UDim2.new(0,0,0,count*33)
+
+    local query = SearchBox.Text:lower():match("^%s*(.-)%s*$")
+    local matches = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= plr and (query == "" or
+            player.Name:lower():find(query, 1, true) or
+            player.DisplayName:lower():find(query, 1, true)) then
+            table.insert(matches, player)
+        end
+    end
+    table.sort(matches, function(a, b)
+        return a.Name:lower() < b.Name:lower()
+    end)
+
+    for _, player in ipairs(matches) do
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -6, 0, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        btn.Text = player.DisplayName .. " (@" .. player.Name .. ")"
+        btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+        btn.TextSize = 12
+        btn.Font = Enum.Font.Gotham
+        btn.Parent = PlayerList
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+        btn.MouseButton1Click:Connect(function()
+            selectedPlayer = player
+            SearchBox.Text = player.Name
+            SearchBox:ReleaseFocus()
+            StatusLabel.Text = "Selected: @" .. player.Name
+            StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 136)
+        end)
+    end
+
+    if #matches == 0 then
+        local empty = Instance.new("TextLabel")
+        empty.Name = "NoMatches"
+        empty.Size = UDim2.new(1, -6, 0, 30)
+        empty.BackgroundTransparency = 1
+        empty.Text = "No players found in this server"
+        empty.TextColor3 = Color3.fromRGB(160, 160, 160)
+        empty.TextSize = 12
+        empty.Font = Enum.Font.Gotham
+        empty.Parent = PlayerList
+    end
+    PlayerList.CanvasSize = UDim2.new(0, 0, 0, math.max(#matches, 1) * 33)
 end
+
+SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    if selectedPlayer and SearchBox.Text ~= selectedPlayer.Name then
+        selectedPlayer = nil
+    end
+    updatePlayerList()
+end)
 
 function stopGhost()
     State.Running = false; State.Target = nil
@@ -254,7 +290,7 @@ end
 
 local function startGhost(insideMode)
     if State.Running then stopGhost(); task.wait(0.1) end
-    local target = getPlayer(SearchBox.Text)
+    local target = (selectedPlayer and selectedPlayer.Parent == Players and selectedPlayer) or getPlayer(SearchBox.Text)
     if not target then StatusLabel.Text = "❌ Player not found"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80); return end
     local myChar = plr.Character
     if not myChar then return end
@@ -313,12 +349,18 @@ InsideBtn.MouseButton1Click:Connect(function() startGhost(true) end)
 StopBtn.MouseButton1Click:Connect(stopGhost)
 CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; ToggleBtn.Text = "🧢" end)
 Players.PlayerAdded:Connect(updatePlayerList)
-Players.PlayerRemoving:Connect(function(p) updatePlayerList(); if State.Target == p then stopGhost() end end)
+Players.PlayerRemoving:Connect(function(p)
+    if selectedPlayer == p then selectedPlayer = nil end
+    if State.Target == p then stopGhost() end
+    task.defer(updatePlayerList)
+end)
 
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
-        ToggleBtn.MouseButton1Click:Fire()
+        MainFrame.Visible = not MainFrame.Visible
+        ToggleBtn.Text = MainFrame.Visible and "✕" or "🧢"
+        if MainFrame.Visible then updatePlayerList() end
     elseif input.KeyCode == Enum.KeyCode.End then
         stopGhost()
     elseif input.KeyCode == Enum.KeyCode.Space and State.Running then
@@ -328,3 +370,4 @@ end)
 
 updatePlayerList()
 print("✅ Quans awesomesauce headsit v15.0 - Ready")
+```
