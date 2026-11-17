@@ -1,4 +1,3 @@
-```
 --------------------------------------------------------------------
 -- Quans awesomesauce headsit v15.0 - Velocity Prediction
 --------------------------------------------------------------------
@@ -217,7 +216,7 @@ local function updatePlayerList()
         end
     end
 
-    local query = SearchBox.Text:lower():match("^%s*(.-)%s*$")
+    local query = SearchBox.Text:lower():match("^%s*(.-)%s*$"):gsub("^@", "")
     local matches = {}
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= plr and (query == "" or
@@ -290,7 +289,7 @@ end
 
 local function startGhost(insideMode)
     if State.Running then stopGhost(); task.wait(0.1) end
-    local target = (selectedPlayer and selectedPlayer.Parent == Players and selectedPlayer) or getPlayer(SearchBox.Text)
+    local target = (selectedPlayer and selectedPlayer.Parent == Players and selectedPlayer) or getPlayer(SearchBox.Text:gsub("^@", ""))
     if not target then StatusLabel.Text = "❌ Player not found"; StatusLabel.TextColor3 = Color3.fromRGB(255,80,80); return end
     local myChar = plr.Character
     if not myChar then return end
@@ -348,7 +347,9 @@ HeadsitBtn.MouseButton1Click:Connect(function() startGhost(false) end)
 InsideBtn.MouseButton1Click:Connect(function() startGhost(true) end)
 StopBtn.MouseButton1Click:Connect(stopGhost)
 CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; ToggleBtn.Text = "🧢" end)
-Players.PlayerAdded:Connect(updatePlayerList)
+Players.PlayerAdded:Connect(function()
+    task.defer(updatePlayerList)
+end)
 Players.PlayerRemoving:Connect(function(p)
     if selectedPlayer == p then selectedPlayer = nil end
     if State.Target == p then stopGhost() end
@@ -370,4 +371,3 @@ end)
 
 updatePlayerList()
 print("✅ Quans awesomesauce headsit v15.0 - Ready")
-```
